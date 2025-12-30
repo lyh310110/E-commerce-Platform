@@ -1,0 +1,26 @@
+server:
+  port: 8084
+spring:
+  application:
+    name: mall-order-service
+  cloud:
+    nacos:
+      discovery:
+        server-addr: localhost:8848
+  datasource:
+    url: jdbc:mysql://localhost:3306/mall?serverTimezone=UTC&characterEncoding=utf8&useSSL=false
+    username: root
+    password: lyh
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+mybatis-plus:
+  type-aliases-package: edu.fdzc.mallorder.entity
+  configuration:
+    map-underscore-to-camel-case: true
+
+feign:
+  client:
+    config:
+      default:
+        connect-timeout: 5000
+        read-timeout: 5000
