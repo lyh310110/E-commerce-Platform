@@ -4,7 +4,10 @@ import edu.fdzc.mallcommon.entity.Result;
 import edu.fdzc.malluser.entity.Shop;
 import edu.fdzc.malluser.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/shop")
@@ -29,6 +32,17 @@ public class ShopController {
     public Result<Shop> getShopInfo(@RequestParam Long userId) {
         Shop shop = userService.getShopByUserId(userId);
         return shop != null ? Result.success(shop) : Result.error("店铺不存在");
+    }
+
+    /**
+     * 获取店铺列表
+     */
+    @GetMapping("/list")
+    public Result<List<Shop>> getShopList(
+            @RequestParam(required = false) String shopName,
+            @RequestParam(required = false) Integer status) {
+        List<Shop> shopList = userService.getShopList(shopName, status);
+        return Result.success(shopList);
     }
 
     /**

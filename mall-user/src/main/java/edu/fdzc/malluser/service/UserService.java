@@ -9,6 +9,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import edu.fdzc.malluser.entity.Shop;
 import edu.fdzc.malluser.mapper.ShopMapper;
+import edu.fdzc.malluser.entity.UserRole;
+import edu.fdzc.malluser.mapper.UserRoleMapper;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -18,6 +20,7 @@ import java.util.List;
 public class UserService {
     private final UserMapper userMapper;
     private final ShopMapper shopMapper;
+    private final UserRoleMapper userRoleMapper;
 
     public User login(String username, String password){
         QueryWrapper<User> queryWrapper = new QueryWrapper<>();
@@ -73,8 +76,30 @@ public class UserService {
             return null; // 用户名已被其他用户使用
         }
 
-        int result = userMapper.updateById(user);
-        return result > 0 ? userMapper.selectById(user.getId()) : null;
+        // 更新用户基本信息（不包括 status 和 roleType）
+        User existingUserById = userMapper.selectById(user.getId());
+        if (existingUserById != null) {
+            existingUserById.setUsername(user.getUsername());
+            existingUserById.setNickname(user.getNickname());
+            if (user.getPassword() != null) {
+                existingUserById.setPassword(user.getPassword());
+            }
+            userMapper.updateById(existingUserById);
+        }
+
+        // 如果需要更新状态，更新 user_role 表
+        if (user.getStatus() != null) {
+            QueryWrapper<UserRole> roleQueryWrapper = new QueryWrapper<>();
+            roleQueryWrapper.eq("user_id", user.getId());
+            UserRole userRole = userRoleMapper.selectOne(roleQueryWrapper);
+            if (userRole != null) {
+                userRole.setStatus(user.getStatus());
+                userRole.setUpdateTime(LocalDateTime.now());
+                userRoleMapper.updateById(userRole);
+            }
+        }
+
+        return userMapper.selectById(user.getId());
     }
 
     /**
@@ -95,14 +120,37 @@ public class UserService {
         queryWrapper.orderByAsc("id");
 
         Page<User> userPage = userMapper.selectPage(page, queryWrapper);
-        return userPage.getRecords();
+        List<User> userList = userPage.getRecords();
+
+        // 为每个用户查询角色信息
+        for (User user : userList) {
+            QueryWrapper<UserRole> roleQueryWrapper = new QueryWrapper<>();
+            roleQueryWrapper.eq("user_id", user.getId());
+            UserRole userRole = userRoleMapper.selectOne(roleQueryWrapper);
+            if (userRole != null) {
+                user.setRoleType(String.valueOf(userRole.getRoleType()));
+                user.setStatus(userRole.getStatus());
+            }
+        }
+
+        return userList;
     }
 
     /**
      * 根据ID获取用户信息
      */
     public User getUserById(Long id) {
-        return userMapper.selectById(id);
+        User user = userMapper.selectById(id);
+        if (user != null) {
+            QueryWrapper<UserRole> roleQueryWrapper = new QueryWrapper<>();
+            roleQueryWrapper.eq("user_id", user.getId());
+            UserRole userRole = userRoleMapper.selectOne(roleQueryWrapper);
+            if (userRole != null) {
+                user.setRoleType(String.valueOf(userRole.getRoleType()));
+                user.setStatus(userRole.getStatus());
+            }
+        }
+        return user;
     }
 
     /**
@@ -152,6 +200,25 @@ public class UserService {
         QueryWrapper<Shop> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("shop_name", shopName);
         return shopMapper.selectOne(queryWrapper);
+    }
+
+    /**
+     * 获取店铺列表
+     */
+    public List<Shop> getShopList(String shopName, Integer status) {
+        QueryWrapper<Shop> queryWrapper = new QueryWrapper<>();
+        
+        if (StringUtils.hasText(shopName)) {
+            queryWrapper.like("shop_name", shopName);
+        }
+        
+        if (status != null) {
+            queryWrapper.eq("status", status);
+        }
+        
+        queryWrapper.orderByDesc("create_time");
+        
+        return shopMapper.selectList(queryWrapper);
     }
 
     /**
