@@ -10,7 +10,7 @@ spring:
   datasource:
     url: jdbc:mysql://localhost:3306/mall?serverTimezone=UTC&characterEncoding=utf8&useSSL=false
     username: root
-    password: lyh
+    password: abc@135790
     driver-class-name: com.mysql.cj.jdbc.Driver
 
 mybatis-plus:
