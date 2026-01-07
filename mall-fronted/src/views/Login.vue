@@ -4,40 +4,117 @@
       <template #header>
         <div class="card-header">
           <h2>商城管理系统</h2>
+          <div class="tab-switch">
+            <el-button
+              :type="activeTab === 'login' ? 'primary' : 'default'"
+              @click="activeTab = 'login'"
+            >
+              登录
+            </el-button>
+            <el-button
+              :type="activeTab === 'register' ? 'primary' : 'default'"
+              @click="activeTab = 'register'"
+            >
+              注册
+            </el-button>
+          </div>
         </div>
       </template>
-      <el-form :model="loginForm" :rules="rules" ref="loginFormRef">
-        <el-form-item prop="username">
-          <el-input
-            v-model="loginForm.username"
-            placeholder="请输入用户名"
-            prefix-icon="User"
-            size="large"
-          />
-        </el-form-item>
-        <el-form-item prop="password">
-          <el-input
-            v-model="loginForm.password"
-            type="password"
-            placeholder="请输入密码"
-            prefix-icon="Lock"
-            size="large"
-            show-password
-            @keyup.enter="handleLogin"
-          />
-        </el-form-item>
-        <el-form-item>
-          <el-button
-            type="primary"
-            size="large"
-            style="width: 100%"
-            :loading="loading"
-            @click="handleLogin"
-          >
-            登录
-          </el-button>
-        </el-form-item>
-      </el-form>
+      
+      <!-- 登录表单 -->
+      <div v-if="activeTab === 'login'">
+        <el-form :model="loginForm" :rules="loginRules" ref="loginFormRef">
+          <el-form-item prop="username">
+            <el-input
+              v-model="loginForm.username"
+              placeholder="请输入用户名"
+              prefix-icon="User"
+              size="large"
+            />
+          </el-form-item>
+          <el-form-item prop="password">
+            <el-input
+              v-model="loginForm.password"
+              type="password"
+              placeholder="请输入密码"
+              prefix-icon="Lock"
+              size="large"
+              show-password
+              @keyup.enter="handleLogin"
+            />
+          </el-form-item>
+          <el-form-item>
+            <el-button
+              type="primary"
+              size="large"
+              style="width: 100%"
+              :loading="loginLoading"
+              @click="handleLogin"
+            >
+              登录
+            </el-button>
+          </el-form-item>
+        </el-form>
+      </div>
+      
+      <!-- 注册表单 -->
+      <div v-else>
+        <el-form :model="registerForm" :rules="registerRules" ref="registerFormRef">
+          <el-form-item prop="username">
+            <el-input
+              v-model="registerForm.username"
+              placeholder="请输入用户名"
+              prefix-icon="User"
+              size="large"
+            />
+          </el-form-item>
+          <el-form-item prop="password">
+            <el-input
+              v-model="registerForm.password"
+              type="password"
+              placeholder="请输入密码"
+              prefix-icon="Lock"
+              size="large"
+              show-password
+            />
+          </el-form-item>
+          <el-form-item prop="confirmPassword">
+            <el-input
+              v-model="registerForm.confirmPassword"
+              type="password"
+              placeholder="请确认密码"
+              prefix-icon="Lock"
+              size="large"
+              show-password
+            />
+          </el-form-item>
+          <el-form-item prop="nickname">
+            <el-input
+              v-model="registerForm.nickname"
+              placeholder="请输入昵称"
+              prefix-icon="Edit"
+              size="large"
+            />
+          </el-form-item>
+          <el-form-item>
+            <el-radio-group v-model="registerForm.roleType" style="width: 100%">
+              <el-radio :label="1">买家注册</el-radio>
+              <el-radio :label="2">卖家注册</el-radio>
+            </el-radio-group>
+          </el-form-item>
+          <el-form-item>
+            <el-button
+              type="primary"
+              size="large"
+              style="width: 100%"
+              :loading="registerLoading"
+              @click="handleRegister"
+            >
+              注册
+            </el-button>
+          </el-form-item>
+        </el-form>
+      </div>
     </el-card>
   </div>
 </template>
@@ -46,24 +123,63 @@
 import { ref, reactive } from 'vue'
 import { useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
-import { login } from '@/api'
+import { login, register, registerSeller } from '@/api'
 import { UserConstant } from '@/constants'
 
 const router = useRouter()
 const loginFormRef = ref(null)
+const registerFormRef = ref(null)
 const loading = ref(false)
+const registerLoading = ref(false)
+const activeTab = ref('login')
 
 const loginForm = reactive({
   username: '',
   password: ''
 })
 
-const rules = {
+const registerForm = reactive({
+  username: '',
+  password: '',
+  confirmPassword: '',
+  nickname: '',
+  roleType: 1
+})
+
+const loginRules = {
   username: [
     { required: true, message: '请输入用户名', trigger: 'blur' }
   ],
   password: [
     { required: true, message: '请输入密码', trigger: 'blur' }
+  ]
+}
+
+const validateConfirmPassword = (rule, value, callback) => {
+  if (value === '') {
+    callback(new Error('请再次输入密码'))
+  } else if (value !== registerForm.password) {
+    callback(new Error('两次输入密码不一致'))
+  } else {
+    callback()
+  }
+}
+
+const registerRules = {
+  username: [
+    { required: true, message: '请输入用户名', trigger: 'blur' },
+    { min: 3, max: 20, message: '用户名长度在 3 到 20 个字符', trigger: 'blur' }
+  ],
+  password: [
+    { required: true, message: '请输入密码', trigger: 'blur' },
+    { min: 6, max: 20, message: '密码长度在 6 到 20 个字符', trigger: 'blur' }
+  ],
+  confirmPassword: [
+    { required: true, validator: validateConfirmPassword, trigger: 'blur' }
+  ],
+  nickname: [
+    { required: true, message: '请输入昵称', trigger: 'blur' },
+    { min: 2, max: 20, message: '昵称长度在 2 到 20 个字符', trigger: 'blur' }
   ]
 }
 
@@ -114,6 +230,64 @@ const handleLogin = async () => {
     }
   })
 }
+
+const handleRegister = async () => {
+  if (!registerFormRef.value) return
+  
+  await registerFormRef.value.validate(async (valid) => {
+    if (valid) {
+      registerLoading.value = true
+      try {
+        const { confirmPassword, ...registerData } = registerForm
+        
+        let res
+        if (registerForm.roleType === 1) {
+          res = await register(registerData)
+        } else {
+          res = await registerSeller(registerData)
+        }
+        
+        if (res.code === 200) {
+          const user = res.data.user
+          const roleType = res.data.roleType
+          
+          localStorage.setItem('token', res.data.token)
+          localStorage.setItem('userInfo', JSON.stringify({ ...user, role_type: roleType }))
+          
+          let targetPath = ''
+          let roleName = ''
+          
+          switch (roleType) {
+            case UserConstant.USER_ROLE.BUYER:
+              targetPath = '/buyer'
+              roleName = '买家'
+              break
+            case UserConstant.USER_ROLE.SELLER:
+              targetPath = '/seller'
+              roleName = '卖家'
+              break
+            case UserConstant.USER_ROLE.ADMIN:
+              targetPath = '/dashboard'
+              roleName = '管理员'
+              break
+            default:
+              ElMessage.error('未知用户角色，无法访问系统')
+              return
+          }
+          
+          ElMessage.success(`注册成功！欢迎，${roleName}！`)
+          router.push(targetPath)
+        }
+      } catch (error) {
+        console.error('注册失败:', error)
+        ElMessage.error('注册失败，请重试')
+      } finally {
+        registerLoading.value = false
+      }
+    }
+  })
+}
+
 </script>
 
 <style scoped>
