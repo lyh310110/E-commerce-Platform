@@ -16,8 +16,8 @@ public class ProductController {
     private final ProductService productService;
 
     @GetMapping("/list")
-    public Result<List<Product>> getAllProducts(){
-        List<Product> products = productService.getAllProducts();
+    public Result<List<Product>> getAllProducts(@RequestParam(required = false) String sort){
+        List<Product> products = productService.getAllProducts(sort);
         return Result.success(products);
     }
 

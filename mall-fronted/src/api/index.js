@@ -117,6 +117,13 @@ export function getOrderDetail(id) {
   })
 }
 
+export function getOrderDetailWithItems(id) {
+  return request({
+    url: `/order/${id}/detail`,
+    method: 'get'
+  })
+}
+
 export function getCartList(userId) {
   return request({
     url: '/cart/list',

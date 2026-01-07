@@ -17,8 +17,36 @@ public class ProductService extends ServiceImpl<ProductMapper, Product> {
 
     private final ProductMapper productMapper;
 
-    public List<Product> getAllProducts(){
-        return productMapper.selectList(null);
+    public List<Product> getAllProducts(String sort){
+        QueryWrapper<Product> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("status", OrderConstant.PRODUCT_STATUS_ON_SALE);
+        
+        // 根据排序参数设置排序方式
+        if (sort != null) {
+            switch (sort) {
+                case "price_asc":
+                    queryWrapper.orderByAsc("price");
+                    break;
+                case "price_desc":
+                    queryWrapper.orderByDesc("price");
+                    break;
+                case "sales_desc":
+                    queryWrapper.orderByDesc("sale_count");
+                    break;
+                case "newest":
+                    queryWrapper.orderByDesc("create_time");
+                    break;
+                default:
+                    // 默认按创建时间降序排列
+                    queryWrapper.orderByDesc("create_time");
+                    break;
+            }
+        } else {
+            // 默认按创建时间降序排列
+            queryWrapper.orderByDesc("create_time");
+        }
+        
+        return productMapper.selectList(queryWrapper);
     }
 
     public Product getProductById(Long id){

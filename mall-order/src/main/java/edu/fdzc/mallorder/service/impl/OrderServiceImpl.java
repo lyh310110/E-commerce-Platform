@@ -3,6 +3,7 @@ package edu.fdzc.mallorder.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import edu.fdzc.mallcommon.constant.OrderConstant;
 import edu.fdzc.mallorder.dto.OrderDTO;
+import edu.fdzc.mallorder.dto.OrderDetailDTO;
 import edu.fdzc.mallorder.entity.Order;
 import edu.fdzc.mallorder.entity.OrderItem;
 import edu.fdzc.mallorder.mapper.OrderItemMapper;
@@ -94,6 +95,51 @@ public class OrderServiceImpl implements OrderService {
     public Order getOrderDetail(Long orderId) {
         log.info("获取订单详情，订单ID: {}", orderId);
         return orderMapper.selectById(orderId);
+    }
+
+    /**
+     * 获取订单详情（包含商品信息）
+     */
+    @Override
+    public OrderDetailDTO getOrderDetailWithItems(Long orderId) {
+        log.info("获取订单详情（包含商品信息），订单ID: {}", orderId);
+        
+        // 获取订单基本信息
+        Order order = orderMapper.selectById(orderId);
+        if (order == null) {
+            log.error("订单不存在，订单ID: {}", orderId);
+            return null;
+        }
+        
+        // 获取订单商品列表
+        QueryWrapper<OrderItem> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("order_id", orderId);
+        List<OrderItem> orderItems = orderItemMapper.selectList(queryWrapper);
+        
+        // 构建OrderDetailDTO
+        OrderDetailDTO orderDetailDTO = new OrderDetailDTO();
+        orderDetailDTO.setId(order.getId());
+        orderDetailDTO.setOrderNo(order.getOrderNo());
+        orderDetailDTO.setUserId(order.getUserId());
+        orderDetailDTO.setShopId(order.getShopId());
+        orderDetailDTO.setTotalAmount(order.getTotalAmount());
+        orderDetailDTO.setPayAmount(order.getPayAmount());
+        orderDetailDTO.setStatus(order.getStatus());
+        orderDetailDTO.setPaymentType(order.getPaymentType());
+        orderDetailDTO.setPaymentTime(order.getPaymentTime());
+        orderDetailDTO.setConsignTime(order.getConsignTime());
+        orderDetailDTO.setEndTime(order.getEndTime());
+        orderDetailDTO.setCloseTime(order.getCloseTime());
+        orderDetailDTO.setReceiverName(order.getReceiverName());
+        orderDetailDTO.setReceiverPhone(order.getReceiverPhone());
+        orderDetailDTO.setReceiverAddress(order.getReceiverAddress());
+        orderDetailDTO.setRemark(order.getRemark());
+        orderDetailDTO.setCreateTime(order.getCreateTime());
+        orderDetailDTO.setUpdateTime(order.getUpdateTime());
+        orderDetailDTO.setOrderItems(orderItems);
+        
+        log.info("获取订单详情成功，订单ID: {}, 商品数量: {}", orderId, orderItems.size());
+        return orderDetailDTO;
     }
 
     /**

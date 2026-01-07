@@ -216,7 +216,7 @@ public class UserService {
             queryWrapper.eq("status", status);
         }
         
-        queryWrapper.orderByDesc("create_time");
+        queryWrapper.orderByAsc("id");
         
         return shopMapper.selectList(queryWrapper);
     }

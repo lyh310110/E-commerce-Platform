@@ -236,6 +236,7 @@ import { ElMessage } from 'element-plus'
 import {
   getOrderList,
   getOrderDetail,
+  getOrderDetailWithItems,
   payOrder,
   cancelOrder,
   confirmOrder,
@@ -344,7 +345,7 @@ const handleTabChange = (tabName) => {
 // 查看订单详情
 const viewOrderDetail = async (orderId) => {
   try {
-    const response = await getOrderDetail(orderId)
+    const response = await getOrderDetailWithItems(orderId)
     orderDetail.value = response.data
     dialogVisible.value = true
   } catch (error) {

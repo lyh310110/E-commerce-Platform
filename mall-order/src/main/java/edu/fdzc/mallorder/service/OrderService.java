@@ -1,6 +1,7 @@
 package edu.fdzc.mallorder.service;
 
 import edu.fdzc.mallorder.dto.OrderDTO;
+import edu.fdzc.mallorder.dto.OrderDetailDTO;
 import edu.fdzc.mallorder.entity.Order;
 import edu.fdzc.mallorder.entity.OrderItem;
 
@@ -19,9 +20,14 @@ public interface OrderService {
     List<Order> getUserOrders(Long userId, Integer status);
 
     /**
-     * 获取订单详情
+     * 获取订单详情（仅基本信息）
      */
     Order getOrderDetail(Long orderId);
+
+    /**
+     * 获取订单详情（包含商品信息）
+     */
+    OrderDetailDTO getOrderDetailWithItems(Long orderId);
 
     /**
      * 获取订单商品列表

@@ -2,6 +2,7 @@ package edu.fdzc.mallorder.controller;
 
 import edu.fdzc.mallcommon.entity.Result;
 import edu.fdzc.mallorder.dto.OrderDTO;
+import edu.fdzc.mallorder.dto.OrderDetailDTO;
 import edu.fdzc.mallorder.entity.Order;
 import edu.fdzc.mallorder.entity.OrderItem;
 import edu.fdzc.mallorder.entity.Shop;
@@ -157,6 +158,15 @@ public class OrderController {
     public Result<Order> getOrderDetail(@PathVariable Long id) {
         Order order = orderService.getOrderDetail(id);
         return order != null ? Result.success(order) : Result.error("订单不存在");
+    }
+
+    /**
+     * 获取订单详情（包含商品信息）
+     */
+    @GetMapping("/{id}/detail")
+    public Result<OrderDetailDTO> getOrderDetailWithItems(@PathVariable Long id) {
+        OrderDetailDTO orderDetail = orderService.getOrderDetailWithItems(id);
+        return orderDetail != null ? Result.success(orderDetail) : Result.error("订单不存在");
     }
 
     /**
