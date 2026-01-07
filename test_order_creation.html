@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>订单创建测试</title>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+</head>
+<body>
+    <h1>订单创建测试</h1>
+    <button onclick="testOrderCreation()">测试创建订单</button>
+    <div id="result"></div>
+
+    <script>
+        function testOrderCreation() {
+            const resultDiv = document.getElementById('result');
+            resultDiv.innerHTML = '测试中...';
+
+            // 模拟前端发送的订单数据
+            const orderData = {
+                order: {
+                    userId: 2,
+                    shopId: 1,
+                    totalAmount: 1199.98,
+                    payAmount: 1199.98,
+                    receiverName: '默认收货人',
+                    receiverPhone: '13800138000',
+                    receiverAddress: '默认收货地址'
+                },
+                orderItems: [{
+                    productId: 1,
+                    productName: '测试商品1',
+                    quantity: 2,
+                    price: 599.99,
+                    totalPrice: 1199.98
+                }]
+            };
+
+            // 尝试发送请求到后端
+            axios.post('http://localhost:8080/order/create', orderData)
+                .then(response => {
+                    resultDiv.innerHTML = `
+                        <h2>成功！</h2>
+                        <p>响应状态：${response.status}</p>
+                        <p>响应数据：${JSON.stringify(response.data, null, 2)}</p>
+                    `;
+                })
+                .catch(error => {
+                    resultDiv.innerHTML = `
+                        <h2>失败！</h2>
+                        <p>错误信息：${error.message}</p>
+                        ${error.response ? 
+                            `<p>响应状态：${error.response.status}</p>
+                            <p>响应数据：${JSON.stringify(error.response.data, null, 2)}</p>` : 
+                            ''
+                        }
+                    `;
+                });
+        }
+    </script>
+</body>
+</html>

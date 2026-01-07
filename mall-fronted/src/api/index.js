@@ -55,10 +55,19 @@ export function updateShop(data) {
   })
 }
 
-export function getProductList() {
+export function getProductList(params) {
   return request({
     url: '/product/list',
-    method: 'get'
+    method: 'get',
+    params
+  })
+}
+
+export function getShopProducts(params) {
+  return request({
+    url: '/seller/product/list',
+    method: 'get',
+    params
   })
 }
 
@@ -85,6 +94,14 @@ export function offShelfProduct(id, shopId) {
   })
 }
 
+export function addProduct(data) {
+  return request({
+    url: '/seller/product/publish',
+    method: 'post',
+    data
+  })
+}
+
 export function getOrderList(params) {
   return request({
     url: '/order/list',
@@ -97,5 +114,87 @@ export function getOrderDetail(id) {
   return request({
     url: `/order/${id}`,
     method: 'get'
+  })
+}
+
+export function getCartList(userId) {
+  return request({
+    url: '/cart/list',
+    method: 'get',
+    params: { userId }
+  })
+}
+
+export function addToCart(data) {
+  return request({
+    url: '/cart/add',
+    method: 'post',
+    data
+  })
+}
+
+export function removeFromCart(id) {
+  return request({
+    url: `/cart/${id}`,
+    method: 'delete'
+  })
+}
+
+export function createOrder(data) {
+  return request({
+    url: '/order/create',
+    method: 'post',
+    data
+  })
+}
+
+export function payOrder(id) {
+  return request({
+    url: `/order/${id}/pay`,
+    method: 'post',
+    params: { paymentType: 1 } // 默认支付方式
+  })
+}
+
+export function confirmOrder(id, userId) {
+  return request({
+    url: `/order/${id}/confirm`,
+    method: 'post',
+    params: { userId }
+  })
+}
+
+export function cancelOrder(id, userId) {
+  return request({
+    url: `/order/${id}/cancel`,
+    method: 'post',
+    params: { userId },
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  })
+}
+
+export function getShopOrders(params) {
+  return request({
+    url: '/order/seller/order/list',
+    method: 'get',
+    params
+  })
+}
+
+export function shipOrder(id, shopId) {
+  return request({
+    url: `/order/${id}/ship`,
+    method: 'post',
+    params: { shopId }
+  })
+}
+
+export function receivePayment(id, shopId) {
+  return request({
+    url: `/order/${id}/receive-payment`,
+    method: 'post',
+    params: { shopId }
   })
 }

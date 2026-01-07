@@ -22,7 +22,7 @@ spring:
         - id: order-service
           uri: http://localhost:8084
           predicates:
-            - Path=/api/order/**,/api/address/**
+            - Path=/api/order/**,/api/address/**,/api/seller/order/**
           filters:
             - StripPrefix=1
 
@@ -47,6 +47,9 @@ spring:
               - "http://localhost:8849"
               - "http://127.0.0.1:8849"
               - "http://localhost:3000"
+              - "http://localhost:3001"
+              - "http://localhost:3002"
+              - "http://localhost:3003"
               - "http://localhost:8080"
             allowed-methods: "*"
             allowed-headers: "*"

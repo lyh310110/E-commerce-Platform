@@ -79,15 +79,32 @@ const handleLogin = async () => {
           const user = res.data.user
           const roleType = res.data.roleType
           
-          if (roleType !== UserConstant.USER_ROLE.ADMIN) {
-            ElMessage.error('您不是管理员，无法访问管理系统')
-            return
-          }
-          
           localStorage.setItem('token', res.data.token)
           localStorage.setItem('userInfo', JSON.stringify({ ...user, role_type: roleType }))
-          ElMessage.success('登录成功')
-          router.push('/dashboard')
+          
+          let targetPath = ''
+          let roleName = ''
+          
+          switch (roleType) {
+            case UserConstant.USER_ROLE.BUYER:
+              targetPath = '/buyer'
+              roleName = '买家'
+              break
+            case UserConstant.USER_ROLE.SELLER:
+              targetPath = '/seller'
+              roleName = '卖家'
+              break
+            case UserConstant.USER_ROLE.ADMIN:
+              targetPath = '/dashboard'
+              roleName = '管理员'
+              break
+            default:
+              ElMessage.error('未知用户角色，无法访问系统')
+              return
+          }
+          
+          ElMessage.success(`欢迎，${roleName}！`)
+          router.push(targetPath)
         }
       } catch (error) {
         console.error('登录失败:', error)
