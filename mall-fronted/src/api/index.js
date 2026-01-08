@@ -221,6 +221,29 @@ export function shipOrder(id, shopId) {
   })
 }
 
+export function getDashboardStatistics() {
+  return request({
+    url: '/statistics/dashboard',
+    method: 'get'
+  })
+}
+
+export function register(data) {
+  return request({
+    url: '/auth/register',
+    method: 'post',
+    data
+  })
+}
+
+export function registerSeller(data) {
+  return request({
+    url: '/auth/register/seller',
+    method: 'post',
+    data
+  })
+}
+
 export function receivePayment(id, shopId) {
   return request({
     url: `/order/${id}/receive-payment`,

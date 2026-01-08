@@ -7,6 +7,8 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 
+import java.time.LocalDateTime;
+
 @Data
 @TableName("user")
 public class User {
@@ -15,6 +17,11 @@ public class User {
     private String username;
     private String password;
     private String nickname;
+    private String avatar;
+    private String phone;
+    private LocalDateTime lastLoginTime;
+    private LocalDateTime createTime;
+    private LocalDateTime updateTime;
     @TableField(exist = false)
     private Integer status;
     @TableField(exist = false)
