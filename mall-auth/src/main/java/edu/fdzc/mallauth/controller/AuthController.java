@@ -49,4 +49,10 @@ public class AuthController {
         }
         return result;
     }
+
+    @PostMapping("/verify-token")
+    public Result<Map<String, Object>> verifyToken(@RequestBody Map<String, String> params) {
+        String token = params.get("token");
+        return authService.verifyToken(token);
+    }
 }

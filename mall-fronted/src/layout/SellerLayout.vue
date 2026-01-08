@@ -27,6 +27,10 @@
           <el-icon><Setting /></el-icon>
           <span>基础店铺设置</span>
         </el-menu-item>
+        <el-menu-item index="/seller/coupons">
+          <el-icon><Ticket /></el-icon>
+          <span>优惠券管理</span>
+        </el-menu-item>
       </el-menu>
     </el-aside>
     <el-container>
@@ -64,7 +68,7 @@
 import { ref, computed, onMounted } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { ElMessage } from 'element-plus'
-import { Goods, Document, Setting } from '@element-plus/icons-vue'
+import { Goods, Document, Setting, Ticket } from '@element-plus/icons-vue'
 
 const router = useRouter()
 const route = useRoute()
@@ -77,7 +81,8 @@ const currentTitle = computed(() => {
     '/seller': '首页',
     '/seller/products': '商品管理',
     '/seller/orders': '订单管理',
-    '/seller/settings': '基础店铺设置'
+    '/seller/settings': '基础店铺设置',
+    '/seller/coupons': '优惠券管理'
   }
   return titleMap[route.path] || '首页'
 })

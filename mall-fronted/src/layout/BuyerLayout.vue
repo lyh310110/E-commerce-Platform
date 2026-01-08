@@ -23,9 +23,10 @@
           <el-icon><Goods /></el-icon>
           <span>商品浏览</span>
         </el-menu-item>
-        <el-menu-item index="/buyer/favorites">
-          <el-icon><Setting /></el-icon>
-          <span>设置</span>
+        <el-menu-item index="/buyer/favorites">          <el-icon><Setting /></el-icon>          <span>设置</span>        </el-menu-item>        <el-menu-item index="/buyer/mypage">          <el-icon><User /></el-icon>          <span>我的页面</span>        </el-menu-item>
+        <el-menu-item index="/buyer/coupons">
+          <el-icon><Ticket /></el-icon>
+          <span>我的优惠券</span>
         </el-menu-item>
       </el-menu>
     </el-aside>
@@ -72,14 +73,17 @@ const userInfo = ref(null)
 const activeMenu = computed(() => route.path)
 
 const currentTitle = computed(() => {
-  const titleMap = {
-    '/buyer': '首页',
-    '/buyer/orders': '我的订单',
-    '/buyer/products': '商品浏览',
-    '/buyer/favorites': '设置'
-  }
-  return titleMap[route.path] || '首页'
-})
+    const titleMap = {
+      '/buyer': '首页',
+      '/buyer/orders': '我的订单',
+      '/buyer/products': '商品浏览',
+      '/buyer/favorites': '我的收藏',
+      '/buyer/footprints': '我的足迹',
+      '/buyer/mypage': '我的页面',
+      '/buyer/coupons': '我的优惠券'
+    }
+    return titleMap[route.path] || '首页'
+  })
 
 const handleCommand = (command) => {
   if (command === 'logout') {

@@ -13,7 +13,10 @@ import edu.fdzc.malluser.entity.UserRole;
 import edu.fdzc.malluser.mapper.UserRoleMapper;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -22,11 +25,40 @@ public class UserService {
     private final ShopMapper shopMapper;
     private final UserRoleMapper userRoleMapper;
 
-    public User login(String username, String password){
+    public Map<String, Object> login(String username, String password){
         QueryWrapper<User> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("username",username)
-                .eq("password",password);
-        return userMapper.selectOne(queryWrapper);
+        queryWrapper.eq("username", username)
+                .eq("password", password);
+        User user = userMapper.selectOne(queryWrapper);
+        
+        if (user != null) {
+            // 为用户查询角色信息
+            QueryWrapper<UserRole> roleQueryWrapper = new QueryWrapper<>();
+            roleQueryWrapper.eq("user_id", user.getId());
+            UserRole userRole = userRoleMapper.selectOne(roleQueryWrapper);
+            
+            // 查询用户的店铺信息
+            QueryWrapper<Shop> shopQueryWrapper = new QueryWrapper<>();
+            shopQueryWrapper.eq("user_id", user.getId());
+            Shop shop = shopMapper.selectOne(shopQueryWrapper);
+            
+            Map<String, Object> resultMap = new HashMap<>();
+            Map<String, Object> userMap = new HashMap<>();
+            userMap.put("id", user.getId());
+            userMap.put("username", user.getUsername());
+            userMap.put("nickname", user.getNickname());
+            if (shop != null) {
+                userMap.put("shopId", shop.getId());
+            }
+            
+            resultMap.put("user", userMap);
+            // 生成临时token（实际项目中应该使用JWT）
+            resultMap.put("token", UUID.randomUUID().toString());
+            resultMap.put("roleType", userRole != null ? userRole.getRoleType() : 0);
+            
+            return resultMap;
+        }
+        return null;
     }
 
     /**

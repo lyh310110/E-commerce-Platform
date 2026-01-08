@@ -14,12 +14,6 @@ import java.util.List;
 public class UserController {
     private final UserService userService;
 
-    @PostMapping("/login")
-    public Result<User> login(@RequestParam String username, @RequestParam String password){
-        User user = userService.login(username,password);
-        return user == null?Result.error("用户名或者密码错误！"):Result.success(user);
-    }
-
     /**
      * 1. 用户新增
      */

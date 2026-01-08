@@ -5,7 +5,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 
-@SpringBootApplication
+@SpringBootApplication(exclude = org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration.class)
 @EnableDiscoveryClient
 @MapperScan("edu.fdzc.mallauth.mapper")
 public class AuthApplication {

@@ -8,6 +8,22 @@ export function login(data) {
   })
 }
 
+export function register(data) {
+  return request({
+    url: '/auth/register',
+    method: 'post',
+    data
+  })
+}
+
+export function registerSeller(data) {
+  return request({
+    url: '/auth/register/seller',
+    method: 'post',
+    data
+  })
+}
+
 export function getUserList(params) {
   return request({
     url: '/user/list',
@@ -74,6 +90,13 @@ export function getShopProducts(params) {
 export function getProductById(id) {
   return request({
     url: `/product/${id}`,
+    method: 'get'
+  })
+}
+
+export function getProductComments(id) {
+  return request({
+    url: `/product/${id}/comments`,
     method: 'get'
   })
 }
@@ -203,5 +226,190 @@ export function receivePayment(id, shopId) {
     url: `/order/${id}/receive-payment`,
     method: 'post',
     params: { shopId }
+  })
+}
+
+export function getDashboardStatistics() {
+  return request({
+    url: '/statistics/dashboard',
+    method: 'get'
+  })
+}
+
+// 收藏功能相关API
+export function getFavorites(userId) {
+  return request({
+    url: '/favorite/list',
+    method: 'get',
+    params: { userId }
+  })
+}
+
+export function addFavorite(data) {
+  return request({
+    url: '/favorite/add',
+    method: 'post',
+    data
+  })
+}
+
+export function removeFavorite(id) {
+  return request({
+    url: `/favorite/${id}`,
+    method: 'delete'
+  })
+}
+
+export function checkFavorite(userId, productId) {
+  return request({
+    url: '/favorite/check',
+    method: 'get',
+    params: { userId, productId }
+  })
+}
+
+// 足迹功能相关API
+export function getFootprints(userId) {
+  return request({
+    url: '/footprint/list',
+    method: 'get',
+    params: { userId }
+  })
+}
+
+export function addFootprint(data) {
+  return request({
+    url: '/footprint/add',
+    method: 'post',
+    data
+  })
+}
+
+export function clearFootprints(userId) {
+  return request({
+    url: '/footprint/clear',
+    method: 'delete',
+    params: { userId }
+  })
+}
+
+// 优惠券功能相关API
+export function getAvailableCoupons() {
+  return request({
+    url: '/coupon/available',
+    method: 'get'
+  })
+}
+
+export function getUserCoupons(userId) {
+  return request({
+    url: '/coupon/user/list',
+    method: 'get',
+    params: { userId }
+  })
+}
+
+export function obtainCoupon(userId, couponId) {
+  return request({
+    url: '/coupon/obtain',
+    method: 'post',
+    params: { userId, couponId }
+  })
+}
+
+// 卖家端优惠券管理API
+export function getSellerCoupons(shopId) {
+  return request({
+    url: '/coupon/seller/list',
+    method: 'get',
+    params: { shopId }
+  })
+}
+
+export function createCoupon(data) {
+  return request({
+    url: '/coupon/seller/create',
+    method: 'post',
+    data
+  })
+}
+
+export function updateCoupon(data) {
+  return request({
+    url: '/coupon/seller/update',
+    method: 'post',
+    data
+  })
+}
+
+export function deleteCoupon(id) {
+  return request({
+    url: '/coupon/seller/delete',
+    method: 'post',
+    params: { id }
+  })
+}
+
+export function toggleCouponStatus(id, status) {
+  return request({
+    url: '/coupon/seller/toggle-status',
+    method: 'post',
+    params: { id, status }
+  })
+}
+
+// 积分系统相关API
+export function getUserPoint(userId) {
+  return request({
+    url: '/point/user',
+    method: 'get',
+    params: { userId }
+  })
+}
+
+export function getPointRecords(userId) {
+  return request({
+    url: '/point/records',
+    method: 'get',
+    params: { userId }
+  })
+}
+
+// 客服咨询相关API
+export function getConsultations(userId) {
+  return request({
+    url: '/customer-service/list',
+    method: 'get',
+    params: { userId }
+  })
+}
+
+export function getConsultationDetail(id) {
+  return request({
+    url: `/customer-service/detail/${id}`,
+    method: 'get'
+  })
+}
+
+export function getConsultationReplies(consultationId) {
+  return request({
+    url: `/customer-service/replies/${consultationId}`,
+    method: 'get'
+  })
+}
+
+export function addConsultation(data) {
+  return request({
+    url: '/customer-service/add',
+    method: 'post',
+    data
+  })
+}
+
+export function addReply(data) {
+  return request({
+    url: '/customer-service/reply/add',
+    method: 'post',
+    data
   })
 }

@@ -3,28 +3,31 @@ server:
 spring:
   application:
     name: mall-auth-service
+# 暂时禁用Nacos服务注册
   cloud:
     nacos:
       discovery:
-        server-addr: localhost:8848
+        enabled: false
   datasource:
     url: jdbc:mysql://localhost:3306/mall?serverTimezone=UTC&characterEncoding=utf8&useSSL=false
     username: root
     #    password: lyh
-    password: 123456
+#    password: abc@135790
+    password: root
     driver-class-name: com.mysql.cj.jdbc.Driver
-  redis:
-    host: localhost
-    port: 6379
-    password:
-    database: 0
-    timeout: 3000ms
-    lettuce:
-      pool:
-        max-active: 20
-        max-wait: -1ms
-        max-idle: 10
-        min-idle: 0
+  # Redis配置暂时禁用
+  # redis:
+  #   host: localhost
+  #   port: 6379
+  #   password:
+  #   database: 0
+  #   timeout: 3000ms
+  #   lettuce:
+  #     pool:
+  #       max-active: 20
+  #       max-wait: -1ms
+  #       max-idle: 10
+  #       min-idle: 0
 
 mybatis-plus:
   type-aliases-package: edu.fdzc.mallauth.entity
@@ -36,3 +39,11 @@ jwt:
   secret: mall-microservice-jwt-secret-key-2025-12-30
   expire: 604800 # 7天过期（秒）
   header: Authorization
+
+logging:
+  level:
+    root: INFO
+    edu.fdzc.mallauth: DEBUG
+    org.springframework.cloud: DEBUG
+    com.alibaba.nacos: DEBUG
+    com.baomidou: DEBUG

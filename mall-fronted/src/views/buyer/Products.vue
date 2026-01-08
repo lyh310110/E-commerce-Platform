@@ -67,7 +67,7 @@
               <div class="product-actions">
                 <el-button size="small" type="primary" @click="addProductToCart(product.id)">加入购物车</el-button>
                 <el-button size="small" @click="toggleFavorite(product.id)">
-                  <el-icon><Star /></el-icon>
+                  <el-icon><StarFilled v-if="favoritedProducts[product.id]" /><Star v-else /></el-icon>
                 </el-button>
               </div>
             </div>
@@ -97,9 +97,10 @@
 </template>
 
 <script setup>
-import { ref, reactive, onMounted } from 'vue'
+import { ref, reactive, onMounted, h } from 'vue'
 import { ElMessage } from 'element-plus'
-import { getShopList, getProductList, addToCart as apiAddToCart } from '@/api'
+import { Star, StarFilled } from '@element-plus/icons-vue'
+import { getShopList, getProductList, addToCart as apiAddToCart, addFavorite, checkFavorite, removeFavorite, addFootprint } from '@/api'
 
 const searchKeyword = ref('')
 const sortBy = ref('price_asc')
@@ -111,6 +112,7 @@ const loading = ref(false)
 const activeShop = ref('all')
 const shops = ref([])
 const products = ref([])
+const favoritedProducts = ref({}) // 跟踪商品的收藏状态，键为商品ID，值为布尔值
 
 const handleSearch = () => {
   currentPage.value = 1
@@ -130,8 +132,27 @@ const handleShopSelect = (shopId) => {
   loadProducts()
 }
 
-const viewDetail = (productId) => {
+const viewDetail = async (productId) => {
   console.log('查看商品详情:', productId)
+  
+  try {
+    const userInfo = JSON.parse(localStorage.getItem('userInfo'))
+    console.log('用户信息:', userInfo)
+    if (userInfo) {
+      console.log('用户已登录，开始记录足迹...')
+      // 记录商品足迹
+      const response = await addFootprint({
+        userId: userInfo.id,
+        productId: productId
+      })
+      console.log('记录足迹成功:', response)
+    } else {
+      console.log('用户未登录，不记录足迹')
+    }
+  } catch (error) {
+    console.error('记录足迹失败:', error)
+  }
+  
   // TODO: 跳转到商品详情页
 }
 
@@ -170,10 +191,54 @@ const addProductToCart = async (productId) => {
   }
 }
 
-const toggleFavorite = (productId) => {
-          console.log('切换收藏状态:', productId)
-          // TODO: 收藏/取消收藏逻辑
-        }
+const toggleFavorite = async (productId) => {
+  try {
+    const userInfo = JSON.parse(localStorage.getItem('userInfo'))
+    if (!userInfo) {
+      ElMessage.warning('请先登录')
+      return
+    }
+    
+    // 查找商品信息
+    const product = products.value.find(p => p.id === productId)
+    if (!product) {
+      ElMessage.error('商品信息不存在')
+      return
+    }
+    
+    // 检查当前收藏状态
+    const checkResponse = await checkFavorite(userInfo.id, productId)
+    const favoriteItem = checkResponse.data
+    const isFavorited = favoriteItem !== null
+    
+    if (isFavorited) {
+      // 已经收藏，调用取消收藏API
+      const response = await removeFavorite(favoriteItem.id)
+      if (response.code === 200) {
+        favoritedProducts.value[productId] = false
+        ElMessage.success('取消收藏成功')
+      } else {
+        ElMessage.error('取消收藏失败')
+      }
+    } else {
+      // 未收藏，调用添加收藏API
+      const favoriteData = {
+        userId: userInfo.id,
+        productId: product.id
+      }
+      const response = await addFavorite(favoriteData)
+      if (response.code === 200) {
+        favoritedProducts.value[productId] = true
+        ElMessage.success('收藏成功')
+      } else {
+        ElMessage.error('收藏失败')
+      }
+    }
+  } catch (error) {
+    console.error('切换收藏状态失败:', error)
+    ElMessage.error('操作失败，请重试')
+  }
+}
 
 // 根据shopId获取店铺名称
 const getShopName = (shopId) => {

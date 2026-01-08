@@ -3,7 +3,9 @@ package edu.fdzc.mallproduct.service;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import edu.fdzc.mallproduct.entity.Product;
+import edu.fdzc.mallproduct.entity.ProductComment;
 import edu.fdzc.mallproduct.mapper.ProductMapper;
+import edu.fdzc.mallproduct.mapper.ProductCommentMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import edu.fdzc.mallcommon.constant.OrderConstant;
@@ -16,6 +18,7 @@ import java.util.List;
 public class ProductService extends ServiceImpl<ProductMapper, Product> {
 
     private final ProductMapper productMapper;
+    private final ProductCommentMapper productCommentMapper;
 
     public List<Product> getAllProducts(String sort){
         QueryWrapper<Product> queryWrapper = new QueryWrapper<>();
@@ -51,6 +54,13 @@ public class ProductService extends ServiceImpl<ProductMapper, Product> {
 
     public Product getProductById(Long id){
         return productMapper.selectById(id);
+    }
+
+    /**
+     * 获取商品总数
+     */
+    public long getProductCount(){
+        return baseMapper.selectCount(null);
     }
     /**
      * 卖家发布商品
@@ -105,5 +115,12 @@ public class ProductService extends ServiceImpl<ProductMapper, Product> {
 
         queryWrapper.orderByDesc("create_time");
         return baseMapper.selectList(queryWrapper);
+    }
+
+    /**
+     * 获取商品评论列表
+     */
+    public List<ProductComment> getProductComments(Long productId) {
+        return productCommentMapper.getCommentsByProductId(productId);
     }
 }

@@ -6,15 +6,24 @@ spring:
   cloud:
     nacos:
       discovery:
-        server-addr: localhost:8848
+        enabled: true
   datasource:
     url: jdbc:mysql://localhost:3306/mall?serverTimezone=UTC
     username: root
 #    password: lyh
-    password: 123456
+#    password: abc@135790
+    password: root
     driver-class-name: com.mysql.cj.jdbc.Driver
 
 mybatis-plus:
-  type-aliases-package: edu.fdzc.mall.user.entity
+  type-aliases-package: edu.fdzc.malluser.entity
   configuration:
     map-underscore-to-camel-case: true
+
+logging:
+  level:
+    root: info
+    edu.fdzc.malluser: debug
+    com.alibaba.nacos: warn
+  file:
+    name: logs/mall-user.log

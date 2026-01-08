@@ -27,16 +27,8 @@ const routes = [
         name: 'BuyerOrders',
         component: () => import('@/views/buyer/Orders.vue')
       },
-      {
-        path: 'products',
-        name: 'BuyerProducts',
-        component: () => import('@/views/buyer/Products.vue')
-      },
-      {
-        path: 'favorites',
-        name: 'BuyerFavorites',
-        component: () => import('@/views/buyer/Favorites.vue')
-      }
+      {        path: 'products',        name: 'BuyerProducts',        component: () => import('@/views/buyer/Products.vue')      },      {        path: 'products/:id',        name: 'BuyerProductDetail',        component: () => import('@/views/buyer/ProductDetail.vue')      },
+      {        path: 'favorites',        name: 'BuyerFavorites',        component: () => import('@/views/buyer/Favorites.vue')      },      {        path: 'footprints',        name: 'BuyerFootprints',        component: () => import('@/views/buyer/Footprints.vue')      },      {        path: 'mypage',        name: 'BuyerMyPage',        component: () => import('@/views/buyer/MyPage.vue')      },      {        path: 'coupons',        name: 'BuyerCoupons',        component: () => import('@/views/buyer/Coupons.vue')      }
     ]
   },
   {
@@ -64,6 +56,11 @@ const routes = [
         path: 'settings',
         name: 'SellerSettings',
         component: () => import('@/views/seller/ShopSettings.vue')
+      },
+      {
+        path: 'coupons',
+        name: 'SellerCoupons',
+        component: () => import('@/views/seller/CouponManagement.vue')
       }
     ]
   },

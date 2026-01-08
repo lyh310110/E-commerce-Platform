@@ -2,6 +2,7 @@ package edu.fdzc.mallproduct.controller;
 
 import edu.fdzc.mallcommon.entity.Result;
 import edu.fdzc.mallproduct.entity.Product;
+import edu.fdzc.mallproduct.entity.ProductComment;
 import edu.fdzc.mallproduct.service.ProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -25,5 +26,20 @@ public class ProductController {
     public Result<Product> getProductById(@PathVariable Long id){
         Product product = productService.getProductById(id);
         return product == null ? Result.error("商品不存在") : Result.success(product);
+    }
+
+    /**
+     * 获取商品总数
+     */
+    @GetMapping("/count")
+    public Result<Long> getProductCount(){
+        long count = productService.getProductCount();
+        return Result.success(count);
+    }
+    
+    @GetMapping("/{id}/comments")
+    public Result<List<ProductComment>> getProductComments(@PathVariable Long id){
+        List<ProductComment> comments = productService.getProductComments(id);
+        return Result.success(comments);
     }
 }
