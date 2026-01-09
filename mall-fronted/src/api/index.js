@@ -164,6 +164,8 @@ export function addToCart(data) {
 }
 
 export function removeFromCart(id) {
+  console.log('API removeFromCart called with id:', id)
+  console.log('API removeFromCart id type:', typeof id)
   return request({
     url: `/cart/${id}`,
     method: 'delete'
@@ -218,29 +220,6 @@ export function shipOrder(id, shopId) {
     url: `/order/${id}/ship`,
     method: 'post',
     params: { shopId }
-  })
-}
-
-export function getDashboardStatistics() {
-  return request({
-    url: '/statistics/dashboard',
-    method: 'get'
-  })
-}
-
-export function register(data) {
-  return request({
-    url: '/auth/register',
-    method: 'post',
-    data
-  })
-}
-
-export function registerSeller(data) {
-  return request({
-    url: '/auth/register/seller',
-    method: 'post',
-    data
   })
 }
 

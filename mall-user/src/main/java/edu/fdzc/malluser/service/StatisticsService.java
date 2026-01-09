@@ -5,7 +5,6 @@ import edu.fdzc.mallcommon.entity.Result;
 import edu.fdzc.malluser.entity.Shop;
 import edu.fdzc.malluser.entity.User;
 import edu.fdzc.malluser.entity.UserRole;
-import edu.fdzc.malluser.feign.ProductServiceFeign;
 import edu.fdzc.malluser.mapper.ShopMapper;
 import edu.fdzc.malluser.mapper.UserMapper;
 import edu.fdzc.malluser.mapper.UserRoleMapper;
@@ -22,7 +21,6 @@ public class StatisticsService {
     private final UserMapper userMapper;
     private final UserRoleMapper userRoleMapper;
     private final ShopMapper shopMapper;
-    private final ProductServiceFeign productServiceFeign;
 
     /**
      * 获取系统统计数据
@@ -60,23 +58,9 @@ public class StatisticsService {
     }
 
     /**
-     * 获取商品数量（调用商品服务）
+     * 获取商品数量
      */
     private long getProductCount() {
-        try {
-            System.out.println("开始调用商品服务...");
-            Result<Long> result = productServiceFeign.getProductCount();
-            System.out.println("商品服务调用结果: " + result);
-            if (result != null && result.getCode() == 200) {
-                System.out.println("商品数量: " + result.getData());
-                return result.getData();
-            } else {
-                System.out.println("商品服务返回错误: " + (result != null ? result.getMsg() : "null"));
-            }
-        } catch (Exception e) {
-            System.out.println("调用商品服务异常: " + e.getMessage());
-            e.printStackTrace();
-        }
         return 100L; // 暂时提供默认值，确保前端能显示数据
     }
 }

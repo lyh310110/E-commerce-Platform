@@ -24,6 +24,12 @@ export default defineConfig({
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/api/, '')
       },
+      // 卖家商品服务代理
+      '/api/seller': {
+        target: 'http://localhost:8081',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/api/, '')
+      },
       // 订单服务代理
       '/api/order': {
         target: 'http://localhost:8084',

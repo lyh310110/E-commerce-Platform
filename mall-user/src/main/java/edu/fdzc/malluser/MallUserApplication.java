@@ -7,7 +7,7 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
 
 @SpringBootApplication
 @MapperScan("edu.fdzc.malluser.mapper")
-@EnableFeignClients
+//@EnableFeignClients
 public class MallUserApplication {
 
     public static void main(String[] args) {

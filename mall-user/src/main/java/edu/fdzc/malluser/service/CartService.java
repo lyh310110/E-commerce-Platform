@@ -32,12 +32,12 @@ public class CartService {
         return success;
     }
 
-    public boolean deleteCart(Long id){
+    public boolean deleteCart(String id){
         logger.info("开始删除购物车项，id: {}", id);
         logger.info("id的类型: {}", id != null ? id.getClass().getName() : "null");
         
-        if (id == null) {
-            logger.error("删除购物车失败，id为null");
+        if (id == null || id.isEmpty()) {
+            logger.error("删除购物车失败，id为null或空");
             return false;
         }
         

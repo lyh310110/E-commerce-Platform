@@ -8,7 +8,7 @@ import java.math.BigDecimal;
 @Data
 @TableName("cart")
 public class Cart {
-    private Long id; //购物车id
+    private String id; //购物车id
     private Long userId; //用户id
     private Long productId; //商品id
     private String productName; //商品名称

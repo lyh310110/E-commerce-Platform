@@ -411,7 +411,10 @@ const fetchCartList = async () => {
   try {
     if (!userInfo.value) return
     const response = await getCartList(userInfo.value.id)
-    cartItems.value = response.data || []
+    cartItems.value = (response.data || []).map(item => ({
+      ...item,
+      id: String(item.id) // 将id转换为字符串以避免精度丢失
+    }))
   } catch (error) {
     ElMessage.error('获取购物车数据失败')
     console.error('获取购物车数据失败:', error)
@@ -421,10 +424,17 @@ const fetchCartList = async () => {
 // 从购物车删除商品
 const handleRemoveFromCart = async (cartItem) => {
   try {
-    await removeFromCart(cartItem.id)
+    console.log('准备删除购物车商品，cartItem:', cartItem)
+    console.log('cartItem.id:', cartItem.id)
+    console.log('cartItem.id类型:', typeof cartItem.id)
+    const response = await removeFromCart(cartItem.id)
+    console.log('删除商品响应:', response)
     ElMessage.success('删除商品成功')
     fetchCartList()
   } catch (error) {
+    console.error('删除商品失败详情:', error)
+    console.error('删除商品失败，error.message:', error.message)
+    console.error('删除商品失败，error.response:', error.response)
     ElMessage.error('删除商品失败')
     console.error('删除商品失败:', error)
   }

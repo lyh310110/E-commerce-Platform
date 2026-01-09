@@ -4,6 +4,8 @@ import edu.fdzc.mallcommon.entity.Result;
 import edu.fdzc.malluser.entity.Cart;
 import edu.fdzc.malluser.service.CartService;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -13,6 +15,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class CartController {
     private final CartService cartService;
+    private final Logger logger = LoggerFactory.getLogger(CartController.class);
 
     // 访问路径 /cart/list?userId=XXXX
     @GetMapping("/list")
@@ -30,7 +33,8 @@ public class CartController {
 
     // 删除购物车 DELETE /cart/{id}
     @DeleteMapping("/{id}")
-    public Result<Boolean> deleteCart(@PathVariable Long id){
+    public Result<Boolean> deleteCart(@PathVariable(required = true) String id){
+        logger.info("接收到删除购物车请求，id: {}", id);
         boolean success = cartService.deleteCart(id);
         return success?Result.success():Result.error("删除失败");
     }
